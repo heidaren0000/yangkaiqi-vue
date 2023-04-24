@@ -1,80 +1,108 @@
 <template>
 <div id="app" class="vertical-tab">
-    <!-- 左侧tab栏 -->
-    <ul class="nav nav-tabs1">
-      <li v-for="i in link_list_left" :key="i"><a href="#" :class="activated(i)" @click="display = i"> Section {{i}} </a></li>
-	</ul>
-	<!-- 内容区域 -->
-    <div class="tab-content tabs">
-        <div class="tab-pane  fade" >
-            <h3 >{{ list[display-1].title }}</h3>
-            <p>{{ list[display-1].content }}</p>
-        </div>
-    </div>
-    <ul class="nav nav-tabs2">
-        <!-- 右侧tab栏 -->
-        <li v-for="i in link_list_right" :key="i"><a href="#" :class="activated(i)" @click="display = i"> Section {{i}} </a></li>
-    </ul>
+        <h3>名称:</h3>
+        <input v-model="search_term" type="text" id="name" name="name" required minlength="4" maxlength="8" size="10">
+        <button type="button" @click="search" >查询</button>
+    <infoTable :headers="titles" :info="data_to_show" @delete="delete_handler" ></infoTable>
 </div>          
 
 </template>
 
 <script>
 
-
+import infoTable from './components/infoTable.vue'
 export default {
   name: 'App',
   data() {
-    return {
-      display: 1,
-      link_list_left: [1,2,3],
-      link_list_right: [4,5,6],
-      
-      list: [{
-               id: 1,
-               title: 'Section 1',
-               content: 'content1'
-             }, {
-                id: 2,
-                title: 'Section 2',
-                content: 'content2'
-             }, {
-                 id: 3,
-                 title: 'Section 3',
-                 content: 'content3'
-             }, {
-                 id: 4,
-                 title: 'Section 4',
-                 content: 'content4'
-             }, {
-                 id: 5,
-                 title: 'Section 5',
-                 content: 'content5'
-             }, {
-                 id: 6,
-                 title: 'Section 6',
-                 content: 'content6'
-             }]   
-
-    }
-  },
-  methods: {
-    click_link(i){
-        this.display = i;
+    return { 
+        titles:["ID","主标题","起步价格","显示","操作"],
+        search_term: "",
+        info:[{
+            "id": 287,
+            "title": "严选新式样板间",
+            "price_info": 29.9,
+            "is_show": 1
+        }, {
+            "id": 286,
+            "title": "无“油”无虑的甜蜜酥脆",	
+            "price_info": 45,
+            "is_show": 1
+        }, {
+            "id": 283,
+            "title": "孩子成长中少不了的一双鞋",
+            "price_info": 78,
+            "is_show": 1
+        }, {
+            "id": 282,
+            "title": "成就一室笋香1",
+            "price_info": 121,
+            "is_show": 1
+        }, {
+            "id": 281,
+            "title": "条纹新风尚",
+            "price_info": 29,
+            "is_show": 1
+        }, {
+            "id": 277,
+            "title": "治愈生活的满怀柔软",
+            "price_info": 66.78,
+            "is_show": 1
+        }, {
+            "id": 274,
+            "title": "没有软木拖，怎么过夏天",
+            "price_info": 50.99,
+            "is_show": 1
+        }, {
+            "id": 272,
+            "title": "料理也要精细简单",
+            "price_info": 69,
+            "is_show": 1
+        }, {
+            "id": 271,
+            "title": "选式新懒人",
+            "price_info": 15.3,
+            "is_show": 1
+        }, {
+            "id": 268,
+            "title": "米饭好吃的秘诀：会呼吸的锅",
+            "price_info": 20.1,
+            "is_show": 1
+        }]}
     },
-    activated(i) {
-      let active = 0;
-      let inactive = 1;
-      if(i == this.display) {
-        active = 1;
-        inactive = 0;
-      }
-      return {
-        active,
-        inactive
-      }
+    components:{
+        infoTable
+    },
+    methods: {
+        delete_handler(record) {
+            let index = this.info.indexOf(record);
+            if(index > -1) {
+                this.info.splice(index,1);
+            }
+        },
+        search(){
+            if(this.search_term == "") {
+                this.info.forEach((e) => {
+                    e.is_show = 1;
+                })
+            } else {
+                this.info.forEach((e) => {
+                    if(e.title != this.search_term)
+                        e.is_show = 0;
+                });
+            }
+        }
+    },
+    computed: {
+        data_to_show() {
+            let array2show = [];
+            this.info.forEach((e) => {
+                if(e.is_show) 
+                    array2show.push(e);
+            });
+            return array2show;
+        }
     }
-  }
+
 }
 </script>
 
